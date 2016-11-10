@@ -62,6 +62,7 @@ def graph_generate(data_path='../data'):
                                 G[per].add(title)
     return G
 
+
 # helper function to decode json unicode object to string
 def byteify(input):
     if isinstance(input, dict):
