@@ -17,7 +17,7 @@ raw_text_path = '../data/AA'
 output_path = '../data/AA_tag'
 
 
-def preprocess():
+def pre_process():
     filenames = os.listdir(raw_text_path)
 
     for f in filenames:
@@ -55,4 +55,4 @@ def preprocess():
                     writer.close()
 
 if __name__ == '__main__':
-    preprocess()
+    pre_process()
