@@ -8,12 +8,12 @@ PER_TAG = 'PERSON'
 def graph_generate(data_path='../data'):
     org_path = os.path.join(data_path, 'org')
     per_path = os.path.join(data_path, 'per')
-    G = {}
+    graph = {}
 
     for (path, label) in [(org_path, ORG_TAG), (per_path, PER_TAG)]:
         for title in os.listdir(path):
-            if label == PER_TAG and title not in G:
-                G[title] = set()
+            if label == PER_TAG and title not in graph:
+                graph[title] = set()
             for f in os.listdir(os.path.join(path, title)):
                 with open(os.path.join(path, title, f), 'r') as doc:
                     sentences = doc.read().split('\n\n')
@@ -48,19 +48,19 @@ def graph_generate(data_path='../data'):
                             elif label == PER_TAG:
                                 pers.add(title)
                             for per in pers:
-                                if per not in G:
-                                    G[per] = set()
+                                if per not in graph:
+                                    graph[per] = set()
                                 for org in orgs:
-                                    G[per].add(org)
+                                    graph[per].add(org)
                         elif len(orgs) != 0 and label == PER_TAG:
                             for org in orgs:
-                                G[title].add(org)
+                                graph[title].add(org)
                         elif len(pers) != 0 and label == ORG_TAG:
                             for per in pers:
-                                if per not in G:
-                                    G[per] = set()
-                                G[per].add(title)
-    return G
+                                if per not in graph:
+                                    graph[per] = set()
+                                graph[per].add(title)
+    return graph
 
 
 # helper function to decode json unicode object to string
