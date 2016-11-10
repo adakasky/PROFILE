@@ -1,3 +1,9 @@
+# prevent editting .gitignore
+.gitignore
+
+# IntelliJ IDEA
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -67,7 +73,7 @@ docs/_build/
 target/
 
 # IPython Notebook
-.ipynb_checkpoints/*
+.ipynb_checkpoints/
 
 # pyenv
 .python-version
