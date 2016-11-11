@@ -34,7 +34,8 @@ def graph_generate(data_path='../data'):
                                 while i + j + 1 < len(tokens) and tokens[i + j][1] == PER_TAG:
                                     per += ' ' + tokens[i + j][0]
                                     j += 1
-                                pers.add(per)
+                                if " " in per:
+                                    pers.add(per)
                                 i += j
                             elif tokens[i][1] == ORG_TAG:
                                 j = 1
@@ -42,7 +43,8 @@ def graph_generate(data_path='../data'):
                                 while i + j + 1 < len(tokens) and tokens[i + j][1] == ORG_TAG:
                                     org += ' ' + tokens[i + j][0]
                                     j += 1
-                                orgs.add(org)
+                                if " " in org:
+                                    orgs.add(org)
                                 i += j
                             i += 1
                         if len(orgs) != 0 and len(pers) != 0:
