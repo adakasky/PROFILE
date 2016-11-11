@@ -8,12 +8,15 @@ PER_TAG = 'PERSON'
 def graph_generate(data_path='../data'):
     org_path = os.path.join(data_path, 'org')
     per_path = os.path.join(data_path, 'per')
-    graph = {}
+    per_org_dict = {}
+    org_per_dict = {}
 
     for (path, label) in [(org_path, ORG_TAG), (per_path, PER_TAG)]:
         for title in os.listdir(path):
-            if label == PER_TAG and title not in graph:
-                graph[title] = set()
+            if label == PER_TAG and title not in per_org_dict:
+                per_org_dict[title] = set()
+            elif label == ORG_TAG and title not in org_per_dict:
+                org_per_dict[title] = set()
             for f in os.listdir(os.path.join(path, title)):
                 with open(os.path.join(path, title, f), 'r') as doc:
                     sentences = doc.read().split('\n\n')
@@ -48,19 +51,26 @@ def graph_generate(data_path='../data'):
                             elif label == PER_TAG:
                                 pers.add(title)
                             for per in pers:
-                                if per not in graph:
-                                    graph[per] = set()
+                                if per not in per_org_dict:
+                                    per_org_dict[per] = set()
                                 for org in orgs:
-                                    graph[per].add(org)
+                                    if org not in org_per_dict:
+                                        org_per_dict[org] = set()
+                                    per_org_dict[per].add(org)
+                                    org_per_dict[org].add(per)
                         elif len(orgs) != 0 and label == PER_TAG:
                             for org in orgs:
-                                graph[title].add(org)
+                                if org not in org_per_dict:
+                                    org_per_dict[org] = set()
+                                per_org_dict[title].add(org)
+                                org_per_dict[org].add(title)
                         elif len(pers) != 0 and label == ORG_TAG:
                             for per in pers:
-                                if per not in graph:
-                                    graph[per] = set()
-                                graph[per].add(title)
-    return graph
+                                if per not in per_org_dict:
+                                    per_org_dict[per] = set()
+                                per_org_dict[per].add(title)
+                                org_per_dict[title].add(per)
+    return per_org_dict, org_per_dict
 
 
 # helper function to decode json unicode object to string
@@ -75,19 +85,31 @@ def byteify(input):
         return input
 
 if __name__ == '__main__':
-    # generate graph
-    G = graph_generate()
+    # generate per_org_dict
+    per_org, org_per = graph_generate()
 
-    writer = open('../data/graph.json', 'w')
-    for (k, v) in G.items():
-        G[k] = list(v)
-    writer.write(json.dumps(G))
-    writer.flush()
-    writer.close()
+    per_org_writer = open('../data/per_org_dict.json', 'w')
+    org_per_writer = open('../data/org_per_dict.json', 'w')
 
-    # load graph
+    for (k, v) in per_org.items():
+        per_org[k] = list(v)
+    for (k, v) in org_per.items():
+        org_per[k] = list(v)
+
+    per_org_writer.write(json.dumps(per_org))
+    per_org_writer.flush()
+    per_org_writer.close()
+
+    org_per_writer.write(json.dumps(org_per))
+    org_per_writer.flush()
+    org_per_writer.close()
+
+    # load per_org_dict
     """
-    G = json.loads(open('../data/graph.json', 'r').read(), object_hook=byteify)
-    for (k, v) in G.items():
-        G[k] = set(v)
+    per_org = json.loads(open('../data/per_org_dict.json', 'r').read(), object_hook=byteify)
+    for (k, v) in per_org.items():
+        per_org[k] = set(v)
+    org_per = json.loads(open('../data/org_per_dict.json', 'r').read(), object_hook=byteify)
+    for (k, v) in org_per.items():
+        org_per[k] = set(v)
     """
