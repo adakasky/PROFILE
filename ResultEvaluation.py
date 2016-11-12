@@ -16,7 +16,7 @@ def strip_accents(s):
 if __name__ == '__main__':
     pairs = [(p.split('\t')[0], p.split('\t')[1]) for p in
              codecs.open('../data/pairs.tsv', 'r', 'utf-8').read().split('\n') if p != '']
-    writer = open('../data/pairs_eval.tsv', 'w')
+    writer = codecs.open('../data/pairs_eval.tsv', 'w', 'utf-8')
 
     for pair in pairs:
         per = strip_accents(pair[0])
